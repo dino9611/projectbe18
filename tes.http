@@ -1,2 +1,13 @@
+### get data role
 GET http://localhost:5005/role HTTP/1.1
 Content-Type: application/json
+
+### post Register 
+POST http://localhost:5005/auth/register HTTP/1.1
+Content-Type: application/json
+
+{
+    "username":"user6",
+    "password":"abc123",
+    "email":"dinopwdk@gmail.com"
+}

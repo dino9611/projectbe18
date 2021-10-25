@@ -16,7 +16,11 @@ app.use(
 
 app.use(express.json());
 // klo corsnya "cors()" artinya allow semua ip
-app.use(cors());
+app.use(
+  cors({
+    exposedHeaders: ["x-token-access", "x-token-refresh", "x-total-count"],
+  })
+);
 // untuk membuat token masuk kedalam variable req.token
 app.use(bearerToken());
 //? parse form data berguna untuk upload file /
@@ -40,5 +44,9 @@ app.get("/role", async (req, res) => {
     res.status(500).send(result);
   }
 });
+
+const { authRoutes } = require("./src/routes");
+
+app.use("/auth", authRoutes);
 
 app.listen(PORT, () => console.log(`API JALAN DI PORT ${PORT}`));

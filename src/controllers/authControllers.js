@@ -1,5 +1,5 @@
 const { mysqldb } = require("./../connections");
-const { hashPass, createToken } = require("./../helpers");
+const { hashPass, createToken, transporter } = require("./../helpers");
 const { createTokenEmailVerified, createTokenAccess } = createToken;
 const handlebars = require("handlebars");
 const path = require("path");
@@ -36,6 +36,8 @@ module.exports = {
         username: userData[0].username,
         role_id: userData[0].role_id,
       };
+      // relesea connection melepaskan koneksi dari pool
+      conn.release();
       const emailToken = createTokenEmailVerified(dataToken);
       const accessToken = createTokenAccess(dataToken);
       //?kirim email verifikasi
@@ -57,12 +59,45 @@ module.exports = {
         subject: "Email verifikasi dari hokage Ecommerce",
         html: htmlToEmail,
       });
+      // taro token di headers
+      res.set("x-token-access", accessToken);
       //   berhasil kirim email baru kasih response
-      return res.status(200).send({ token: accessToken, data: userData[0] });
+      return res.status(200).send({ ...userData[0], cart: [] });
     } catch (error) {
       conn.release();
       console.log(error);
       return res.status(500).send({ message: error.message || "server error" });
     }
   },
+  login: async (req, res) => {
+    const { username, password, email } = req.body;
+    const conn = await mysqldb.promise().getConnection();
+    try {
+      let sql = `select id,username,email,isVerified,role_id,user_status from users where username = ? and password`;
+      const [userData] = await conn.query(sql, [username, hashPass(password)]);
+      if (!userData.length) {
+        // kalo lengthnya 0 maka masuk sini
+        throw { message: "username tidak ditemukan" };
+      }
+      //   buat token
+      const dataToken = {
+        id: userData[0].id,
+        username: userData[0].username,
+        role_id: userData[0].role_id,
+      };
+      const accessToken = createTokenAccess(dataToken);
+      //? get Cart tolong cari list cart PR
+
+      //
+      conn.release();
+      res.set("x-token-access", accessToken);
+      //   berhasil kirim email baru kasih response
+      return res.status(200).send({ ...userData[0] });
+    } catch (error) {
+      conn.release();
+      console.log(error);
+      return res.status(500).send({ message: error.message || "server error" });
+    }
+  },
+  keeplogin: async (req, res) => {},
 };
