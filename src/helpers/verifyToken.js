@@ -12,7 +12,7 @@ module.exports.verifyTokenAccess = (req, res, next) => {
   //   token = null;
   // }
   //? dengan bearer
-  // console.log("token", req.token);
+  console.log("token", req.token);
   const token = req.token;
   const key = "saitama"; // kata kunci terserah tetapi harus sama dengan createtokennya
   // '213id0naudnqe91381238hadhabd' => {id:110,role_id:3}

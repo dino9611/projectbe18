@@ -45,8 +45,14 @@ app.get("/role", async (req, res) => {
   }
 });
 
-const { authRoutes } = require("./src/routes");
+const {
+  authRoutes,
+  categoriesRoutes,
+  productsRoutes,
+} = require("./src/routes");
 
 app.use("/auth", authRoutes);
+app.use("/categories", categoriesRoutes);
+app.use("/products", productsRoutes);
 
 app.listen(PORT, () => console.log(`API JALAN DI PORT ${PORT}`));

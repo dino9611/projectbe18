@@ -39,7 +39,7 @@ const uploader = (destination, filenamePrefix) => {
     storage: storage,
     fileFilter: imageFilter,
     limits: {
-      fileSize: 2 * 1024 * 1024, //1mb
+      fileSize: 2 * 1024 * 1024, //2mb
     },
   });
 };

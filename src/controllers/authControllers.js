@@ -62,7 +62,7 @@ module.exports = {
       // taro token di headers
       res.set("x-token-access", accessToken);
       //   berhasil kirim email baru kasih response
-      return res.status(200).send({ ...userData[0], cart: [] });
+      return res.status(200).send({ ...userData[0], carts: [] });
     } catch (error) {
       conn.release();
       console.log(error);
@@ -73,11 +73,11 @@ module.exports = {
     const { username, password, email } = req.body;
     const conn = await mysqldb.promise().getConnection();
     try {
-      let sql = `select id,username,email,isVerified,role_id,user_status from users where username = ? and password`;
+      let sql = `select id,username,email,isVerified,role_id,user_status from users where username = ? and password = ?`;
       const [userData] = await conn.query(sql, [username, hashPass(password)]);
       if (!userData.length) {
         // kalo lengthnya 0 maka masuk sini
-        throw { message: "username tidak ditemukan" };
+        throw { message: "username/email tidak ditemukan" };
       }
       //   buat token
       const dataToken = {
@@ -87,17 +87,46 @@ module.exports = {
       };
       const accessToken = createTokenAccess(dataToken);
       //? get Cart tolong cari list cart PR
-
+      sql = `select p.id,name,price,image,keterangan,qty from carts c 
+              join carts_detail cd on c.id = cd.carts_id 
+              join products p on cd.products_id = p.id 
+              where ischeckout=0 and users_id = ?`;
       //
+      let [carts] = await conn.query(sql, [userData[0].id]);
       conn.release();
       res.set("x-token-access", accessToken);
       //   berhasil kirim email baru kasih response
-      return res.status(200).send({ ...userData[0] });
+      return res.status(200).send({ ...userData[0], carts: carts });
     } catch (error) {
       conn.release();
       console.log(error);
       return res.status(500).send({ message: error.message || "server error" });
     }
   },
-  keeplogin: async (req, res) => {},
+  keeplogin: async (req, res) => {
+    const { id } = req.user;
+    const conn = await mysqldb.promise().getConnection();
+    try {
+      let sql = `select id,username,email,isVerified,role_id,user_status from users where id = ?`;
+      const [userData] = await conn.query(sql, [id]);
+      if (!userData.length) {
+        // kalo lengthnya 0 maka masuk sini
+        throw { message: "username tidak ditemukan" };
+      }
+      //? get Cart tolong cari list cart PR
+      sql = `select p.id,name,price,image,keterangan,qty from carts c 
+              join carts_detail cd on c.id = cd.carts_id 
+              join products p on cd.products_id = p.id 
+              where ischeckout=0 and users_id = ?`;
+      //
+      let [carts] = await conn.query(sql, [id]);
+      conn.release();
+      //   berhasil kirim email baru kasih response
+      return res.status(200).send({ ...userData[0], carts: carts });
+    } catch (error) {
+      conn.release();
+      console.log(error);
+      return res.status(500).send({ message: error.message || "server error" });
+    }
+  },
 };

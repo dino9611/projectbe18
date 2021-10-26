@@ -11,3 +11,31 @@ Content-Type: application/json
     "password":"abc123",
     "email":"dinopwdk@gmail.com"
 }
+
+### post login 
+POST http://localhost:5005/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "username":"user5",
+    "password":"abc123"
+}
+
+
+### get keeplogin 
+GET  http://localhost:5005/auth/keeplogin HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJ1c2VyNSIsInJvbGVfaWQiOjEsImlhdCI6MTYzNTIxNjMwMywiZXhwIjoxNjM1MjU5NTAzfQ.iobIVhb7UJj_AGSPFwW2x2pd6PFx75BxVXYuIEgz1l8
+
+{
+    "username":"user5",
+    "password":"abc123"
+}
+
+### get categories 
+GET  http://localhost:5005/categories HTTP/1.1
+Content-Type: application/json
+
+### get products 
+GET  http://localhost:5005/products?pages=0&limit=5&sort=price HTTP/1.1
+Content-Type: application/json
