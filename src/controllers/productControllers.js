@@ -49,6 +49,7 @@ module.exports = {
       req.query;
     const conn = await mysqldb.promise().getConnection();
     if (!pages) {
+      // jika pages undifined
       pages = 0;
     }
     let offset = pages * limit; // karena pages dimulai dari 0
@@ -57,6 +58,7 @@ module.exports = {
     if (priceMin) {
       querySql += `and price > ${mysqldb.escape(parseInt(priceMin))} `;
     }
+
     if (priceMax) {
       querySql += `and price < ${mysqldb.escape(parseInt(priceMax))} `;
     }

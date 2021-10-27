@@ -14,7 +14,14 @@ app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :date")
 );
 
-app.use(express.json());
+const tes = (req, res, next) => {
+  console.log("coba");
+  next();
+};
+
+// app.use(tes);
+
+app.use(express.json()); // req.body ada karean middleware ini
 // klo corsnya "cors()" artinya allow semua ip
 app.use(
   cors({

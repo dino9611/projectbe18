@@ -91,10 +91,12 @@ module.exports = {
         username: userData[0].username,
         role_id: userData[0].role_id,
       };
+      // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJ1c2VyNSIsInJvbGVfaWQiOjEsImlhdCI6MTYzNTIxNjMwMywiZXhwIjoxNjM1MjU5NTAzfQ.iobIVhb7UJj_AGSPFwW2x2pd6PFx75BxVXYuIEgz1l8
       const accessToken = createTokenAccess(dataToken);
       //? get Cart tolong cari list cart PR
       let [carts] = await conn.query(sqlCart, [userData[0].id]);
       conn.release();
+      // kriim token by header
       res.set("x-token-access", accessToken);
       //   berhasil kirim email baru kasih response
       return res.status(200).send({ ...userData[0], carts: carts });
