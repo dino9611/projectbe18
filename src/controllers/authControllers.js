@@ -5,6 +5,12 @@ const handlebars = require("handlebars");
 const path = require("path");
 const fs = require("fs");
 
+let sqlCart = `select cd.id,carts_id,products_id,name,price,image,keterangan,qty,category from carts c 
+        join carts_detail cd on c.id = cd.carts_id 
+        join products p on cd.products_id = p.id 
+        join categories cg on p.categories_id = cg.id
+        where ischeckout=0 and cd.isdeleted=0 and users_id = ?`;
+
 module.exports = {
   register: async (req, res) => {
     const { username, password, email } = req.body;
@@ -87,12 +93,7 @@ module.exports = {
       };
       const accessToken = createTokenAccess(dataToken);
       //? get Cart tolong cari list cart PR
-      sql = `select p.id,name,price,image,keterangan,qty from carts c 
-              join carts_detail cd on c.id = cd.carts_id 
-              join products p on cd.products_id = p.id 
-              where ischeckout=0 and users_id = ?`;
-      //
-      let [carts] = await conn.query(sql, [userData[0].id]);
+      let [carts] = await conn.query(sqlCart, [userData[0].id]);
       conn.release();
       res.set("x-token-access", accessToken);
       //   berhasil kirim email baru kasih response
@@ -114,12 +115,8 @@ module.exports = {
         throw { message: "username tidak ditemukan" };
       }
       //? get Cart tolong cari list cart PR
-      sql = `select p.id,name,price,image,keterangan,qty from carts c 
-              join carts_detail cd on c.id = cd.carts_id 
-              join products p on cd.products_id = p.id 
-              where ischeckout=0 and users_id = ?`;
-      //
-      let [carts] = await conn.query(sql, [id]);
+
+      let [carts] = await conn.query(sqlCart, [id]);
       conn.release();
       //   berhasil kirim email baru kasih response
       return res.status(200).send({ ...userData[0], carts: carts });

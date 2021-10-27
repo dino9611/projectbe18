@@ -49,10 +49,12 @@ const {
   authRoutes,
   categoriesRoutes,
   productsRoutes,
+  cartRoutes,
 } = require("./src/routes");
 
 app.use("/auth", authRoutes);
 app.use("/categories", categoriesRoutes);
 app.use("/products", productsRoutes);
+app.use("/cart", cartRoutes);
 
 app.listen(PORT, () => console.log(`API JALAN DI PORT ${PORT}`));

@@ -39,3 +39,13 @@ Content-Type: application/json
 ### get products 
 GET  http://localhost:5005/products?pages=0&limit=5 HTTP/1.1
 Content-Type: application/json
+
+### add to CART 
+POST   http://localhost:5005/cart HTTP/1.1
+Content-Type: application/json
+
+{
+    "users_id":4,
+    "products_id":6,
+    "qty":1
+}
