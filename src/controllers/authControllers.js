@@ -5,7 +5,7 @@ const handlebars = require("handlebars");
 const path = require("path");
 const fs = require("fs");
 
-let sqlCart = `select cd.id,carts_id,products_id,name,price,image,keterangan,qty,category from carts c 
+let sqlCart = `select cd.id,carts_id,products_id,name,price,stock,image,keterangan,qty,category from carts c 
         join carts_detail cd on c.id = cd.carts_id 
         join products p on cd.products_id = p.id 
         join categories cg on p.categories_id = cg.id
